@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weather-dashboard</title>
+</head>
+
+<body>
+    <div class="holdingmyform">
+        <h3 class="weathersearch">Enter a City</h3>
+        <form id="weather-form">
+            <label class="city-name"></label>
+            <input name="city" type="text" autofocus="true">
+            <button type="submit" class="btn" onclick=getWeather()>
+                Get Weather
+            </button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="./assets/js/script.js"></script>
+</body>
+
+</html>
