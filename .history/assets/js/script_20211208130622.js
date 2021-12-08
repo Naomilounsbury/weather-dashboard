@@ -10,7 +10,7 @@ var getWeather = function (event) {
     //so the whole url needs to be dynamic so I have to put backticks on the whole thing
     //then the dollar sign and curly braces signal javascript that there will be code in here and the code will evaluate to a string that 
     // will be input in this position 
-    var requestURL = `https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&appid=82b88905657c227b366aeed2a3762dff https://api.openweathermap.org/data/2.5/weather?q=${nameInputEl.value.trim()}&appid=82b88905657c227b366aeed2a3762dff`
+    var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${nameInputEl.value.trim()}&appid=82b88905657c227b366aeed2a3762dff?per_page=10`
     event.preventDefault()
     //need a variable that lets the getweather function have access to the data
     //and return that data
@@ -29,11 +29,9 @@ console.log(nameInputEl.value)
             //dataData is now another temporary variable that we are using so that when response.json resolves it gets
             //put into the temporary variable and we can work with it inside the function
             return response.json()
-            }).then(function (dataData) { 
-                displayCurrentCity(dataData)
+            }).then(function (dataData) {
                 //so by calling saveData inside the .then on the .then we are getting data
                 saveData(nameInputEl.value.trim(), dataData)
-               
             })
         
             
@@ -54,19 +52,12 @@ citySearchName.addEventListener("submit", getWeather);
 var weatherContainerEl = document.querySelector(".cities-container");
 var citiesSearch = document.querySelector("#cities")
 
-
-
 //creating a function that saves the data in local storage
 var saveData = function (city, data) {
     console.log(city)
     console.log(data)
     localStorage.setItem(city, data)
 }
-var displayCurrentCity = function(data){
-    //city date icon temperature wind speed humidity
-    //five day forecast for the city
-    var cityEl =document.querySelector("#city");
-cityEl.textContent = `${data.name} ${} `
-    
+var displayCurrentCity = function(){
 
 }

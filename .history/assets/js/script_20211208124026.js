@@ -1,21 +1,15 @@
 //we are fetchingthe api currently we are in miami but hopefully we can change cities
 //my requestUrl is a string and we have to make the city part of the string dynamic so will need backticks
 //and connect it to the form
-
+var requestURL = "https://api.openweathermap.org/data/2.5/weather?q=miami&appid=82b88905657c227b366aeed2a3762dff"
 //hopefully the way this works is when a city is entered it fetches that data
 
 var getWeather = function (event) {
-    var nameInputEl = document.querySelector(".city-name");
-
-    //so the whole url needs to be dynamic so I have to put backticks on the whole thing
-    //then the dollar sign and curly braces signal javascript that there will be code in here and the code will evaluate to a string that 
-    // will be input in this position 
-    var requestURL = `https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&appid=82b88905657c227b366aeed2a3762dff https://api.openweathermap.org/data/2.5/weather?q=${nameInputEl.value.trim()}&appid=82b88905657c227b366aeed2a3762dff`
     event.preventDefault()
     //need a variable that lets the getweather function have access to the data
     //and return that data
-//type of is a weird one
-console.log(nameInputEl.value)
+
+console.log(event)
 
     fetch(requestURL)
         // after the request finishes, so when the promise resovles the then part is a function that runs once the promise resolves
@@ -29,13 +23,10 @@ console.log(nameInputEl.value)
             //dataData is now another temporary variable that we are using so that when response.json resolves it gets
             //put into the temporary variable and we can work with it inside the function
             return response.json()
-            }).then(function (dataData) { 
-                displayCurrentCity(dataData)
+            }).then(function (dataData) {
                 //so by calling saveData inside the .then on the .then we are getting data
-                saveData(nameInputEl.value.trim(), dataData)
-               
+                saveData("miami", dataData)
             })
-        
             
 
             //had to make the response .json because there wasn't any data otherwise
@@ -47,26 +38,20 @@ console.log(nameInputEl.value)
 //all the new stuff I wanted to try doing without sophie
 // so I grabbed the weather form using jquery and saved it in citySearchName/jquery just messes things up
 var citySearchName = document.querySelector("#weather-form");
-
+// then I grabbed the input and saved it in nameInputEl
+//this might be redundant because I have an onclick on the html
 //I'm not sure if it would be citySearchEl or the button to put the event listener on
 // apparently I need the event listener, it needs to be outside the function because we want it to be added as soon as the page loads
 citySearchName.addEventListener("submit", getWeather);
 var weatherContainerEl = document.querySelector(".cities-container");
 var citiesSearch = document.querySelector("#cities")
 
-
-
 //creating a function that saves the data in local storage
 var saveData = function (city, data) {
     console.log(city)
     console.log(data)
     localStorage.setItem(city, data)
-}
-var displayCurrentCity = function(data){
-    //city date icon temperature wind speed humidity
-    //five day forecast for the city
-    var cityEl =document.querySelector("#city");
-cityEl.textContent = `${data.name} ${} `
-    
+
 
 }
+
