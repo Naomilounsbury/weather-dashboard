@@ -42,7 +42,7 @@ var getWeather = function (event) {
     //this console log is ouside the fetch
     console.log("outside");
 }
-
+//all the new stuff I wanted to try doing without sophie
 // so I grabbed the weather form using jquery and saved it in citySearchName/jquery just messes things up
 var citySearchName = document.querySelector("#weather-form");
 
@@ -64,9 +64,9 @@ var displayCurrentCity = function (data) {
     console.log(data)
     //city date icon temperature wind speed humidity
     //five day forecast for the city
-    var displayDate = moment.unix(data.dt).format('MMMM Do YYYY');
+    var displayDate = moment(data.date).format('MMMM Do YYYY');
     var cityEl = document.querySelector("#city");
-    cityEl.innerHTML = `${data.name} ${displayDate} <img src=http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png>`
+    cityEl.textContent = `${data.name} ${displayDate}`
     var temperatureEl = document.querySelector(".temperature")
     var windSpeedEl = document.querySelector(".wind-speed")
     var humidityEl = document.querySelector(".humidity")
@@ -97,7 +97,6 @@ var getForecast = function (coord) {
     fetch(forecastUrl).then(function (forecastResponse) {
         return forecastResponse.json()
     }).then(function (forecastData) {
-        displayForecast(forecastData)
         //TODO call my display forcast function here
         //so by calling saveData inside the .then on the .then we are getting data
         saveData(nameInputEl.value.trim(), forecastData)
@@ -106,40 +105,19 @@ var getForecast = function (coord) {
 
 }
 
-var displayForecast = function (forecastData) {
+// var displayForecast = function (forecastData) {
 
-    console.log(forecastData)
-    //the for loop is so it runs through all days and hopefully puts them on the page
-    for (var i = 1; i < forecastData.daily.length-2; i++) {
-        // Create a list element
-       
-        var dailyData = forecastData.daily[i]
-        var displayDate = moment.unix(dailyData.dt).format('MMMM Do YYYY');
-        
-        var header = document.createElement('h3');
-        var listItem = document.createElement('li');
-        var temperatureEl = document.createElement('p')
-        var windSpeedEl = document.createElement('p')
-        var humidityEl = document.createElement('p')
-        
-        //TODO add some text to make it look nice
-        temperatureEl.textContent = `${dailyData.temp.day}`
-        windSpeedEl.textContent = `${dailyData.wind_speed}`
-        humidityEl.textContent= `${dailyData.humidity}`
-        header.innerHTML =`<img src=http://openweathermap.org/img/wn/${dailyData.weather[0].icon}@2x.png> ${displayDate}`;
-        fiveDayForecastEl.appendChild(listItem);
+//     console.log(forecastData)
+//     //the for loop is so it runs through all days and hopefully puts them on the page
+//     for (var i = 0; i < data.daily.length; i++) {
+//         // Create a list element
+//         var listItem = document.createElement('li');
+//         listItem.textContent = `${data.daily[i]}`;
 
-        // listItem.textContent = `${forecastData.daily[i]}`;
-        listItem.appendChild(header);
-        listItem.append(temperatureEl, windSpeedEl, humidityEl);
+//         eventList.appendChild(listItem);
 
-        
-        
-        
-        
-    }
-    
-}
+//     }
+// }
 
 
 

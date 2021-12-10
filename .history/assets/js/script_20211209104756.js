@@ -5,12 +5,12 @@
 //hopefully the way this works is when a city is entered it fetches that data
 var nameInputEl = document.querySelector(".city-name");
 var getWeather = function (event) {
-
+    
 
     //so the whole url needs to be dynamic so I have to put backticks on the whole thing
     //then the dollar sign and curly braces signal javascript that there will be code in here and the code will evaluate to a string that 
     // will be input in this position 
-    var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${nameInputEl.value.trim()}&appid=82b88905657c227b366aeed2a3762dff&units=metric`
+    var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${nameInputEl.value.trim()}&appid=82b88905657c227b366aeed2a3762dff`
     event.preventDefault()
     //need a variable that lets the getweather function have access to the data
     //and return that data
@@ -42,7 +42,7 @@ var getWeather = function (event) {
     //this console log is ouside the fetch
     console.log("outside");
 }
-
+//all the new stuff I wanted to try doing without sophie
 // so I grabbed the weather form using jquery and saved it in citySearchName/jquery just messes things up
 var citySearchName = document.querySelector("#weather-form");
 
@@ -61,23 +61,20 @@ var saveData = function (city, data) {
     localStorage.setItem(city, data)
 }
 var displayCurrentCity = function (data) {
-    console.log(data)
     //city date icon temperature wind speed humidity
     //five day forecast for the city
-    var displayDate = moment.unix(data.dt).format('MMMM Do YYYY');
+    var displayDate = moment(data.date).format('MMMM Do YYYY');
     var cityEl = document.querySelector("#city");
-    cityEl.innerHTML = `${data.name} ${displayDate} <img src=http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png>`
-    var temperatureEl = document.querySelector(".temperature")
-    var windSpeedEl = document.querySelector(".wind-speed")
-    var humidityEl = document.querySelector(".humidity")
-    temperatureEl.textContent = "Temperature:" + `${data.main.temp}`+"°C"
-    windSpeedEl.textContent = "Wind Speed:" + `${data.wind.speed}`+ "m/s"
-    humidityEl.textContent = "Humidity:" + `${data.main.humidity}`+ "%"
-    //do I need to append childs here
-    //whys this not sh owing up
-
-
-
+    cityEl.textContent = `${data.name} ${displayDate}`
+    var temperature = document.querySelector(".temperature")
+    var windSpeed = document.querySelector(".wind-speed")
+    var humidity = document.querySelector(".humidity")
+    temperature.textContent = `${data.current.temp}`
+    windSpeed.textContent =`${data.current.wind}`
+    humidity.textContent = `${data.current.humidity}`
+    
+  
+    
 
 }
 //first add more html elements for current city
@@ -97,51 +94,26 @@ var getForecast = function (coord) {
     fetch(forecastUrl).then(function (forecastResponse) {
         return forecastResponse.json()
     }).then(function (forecastData) {
-        displayForecast(forecastData)
         //TODO call my display forcast function here
         //so by calling saveData inside the .then on the .then we are getting data
         saveData(nameInputEl.value.trim(), forecastData)
     })
+    .then(function (data) {
+        console.log(data)
+        //the for loop is so it runs through all the urls of the event and puts them on the page
+        for (var i = 0; i < data.daily.length; i++) {
+            // Create a list element
+            var listItem = document.createElement('li');
 
+            // so here we are using innerhtml because intertext and textcontent don't allow us to add html elements in with dynamically generated titles and links
+            listItem.textContent = `${data.daily[i].uvi}`;
+            eventList.appendChild(listItem);
+            
+        }
+
+    });
 
 }
-
-var displayForecast = function (forecastData) {
-
-    console.log(forecastData)
-    //the for loop is so it runs through all days and hopefully puts them on the page
-    for (var i = 1; i < forecastData.daily.length-2; i++) {
-        // Create a list element
-       
-        var dailyData = forecastData.daily[i]
-        var displayDate = moment.unix(dailyData.dt).format('MMMM Do YYYY');
-        
-        var header = document.createElement('h3');
-        var listItem = document.createElement('li');
-        var temperatureEl = document.createElement('p')
-        var windSpeedEl = document.createElement('p')
-        var humidityEl = document.createElement('p')
-        
-        //TODO add some text to make it look nice
-        temperatureEl.textContent = `${dailyData.temp.day}`
-        windSpeedEl.textContent = `${dailyData.wind_speed}`
-        humidityEl.textContent= `${dailyData.humidity}`
-        header.innerHTML =`<img src=http://openweathermap.org/img/wn/${dailyData.weather[0].icon}@2x.png> ${displayDate}`;
-        fiveDayForecastEl.appendChild(listItem);
-
-        // listItem.textContent = `${forecastData.daily[i]}`;
-        listItem.appendChild(header);
-        listItem.append(temperatureEl, windSpeedEl, humidityEl);
-
-        
-        
-        
-        
-    }
-    
-}
-
-
 
 
 

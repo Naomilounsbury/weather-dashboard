@@ -42,7 +42,7 @@ var getWeather = function (event) {
     //this console log is ouside the fetch
     console.log("outside");
 }
-
+//all the new stuff I wanted to try doing without sophie
 // so I grabbed the weather form using jquery and saved it in citySearchName/jquery just messes things up
 var citySearchName = document.querySelector("#weather-form");
 
@@ -66,7 +66,7 @@ var displayCurrentCity = function (data) {
     //five day forecast for the city
     var displayDate = moment.unix(data.dt).format('MMMM Do YYYY');
     var cityEl = document.querySelector("#city");
-    cityEl.innerHTML = `${data.name} ${displayDate} <img src=http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png>`
+    cityEl.innerHTML = `${data.name} ${displayDate} <img src=http://openweathermap.org/img/wn/${data.weather[i].icon}@2x.png`
     var temperatureEl = document.querySelector(".temperature")
     var windSpeedEl = document.querySelector(".wind-speed")
     var humidityEl = document.querySelector(".humidity")
