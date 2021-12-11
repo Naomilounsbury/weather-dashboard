@@ -95,12 +95,31 @@ var getForecast = function (coord) {
         saveData(nameInputEl.value.trim(), forecastData)
     })
 }
-
+var uvi = parseInt(forecastData.current.uvi)
 var displayForecast = function (forecastData) {
-    //here are the UVI
     var uvIndexEl = document.querySelector(".uv-index")
-    uvIndexEl.textContent = "UV Index: " + `${forecastData.current.uvi}`
+    uvIndexEl.textContent = "UV Index: " + 
     
+    function checkUvIndex() {
+
+        // if the uv index returns 
+
+        if (uvi < 4) {
+            return "good"
+        }
+        if (uvi < 7) {
+            return "moderate"
+        }
+        if (uvi < 10) {
+            return "horrid"
+        }
+
+        for(var i = 0; i < uvIndexEl.length; i++){
+            uvIndexEl[i].className = uvIndexEl[i].className + " " + checkUvIndex(uvIndexEl[i])
+
+        }
+        
+    }
     console.log(forecastData)
     //the for loop is so it runs through all days and hopefully puts them on the page
     for (var i = 1; i < forecastData.daily.length - 2; i++) {
@@ -128,29 +147,6 @@ var displayForecast = function (forecastData) {
 
     }
 
-}
-//LOOK HERE
-//I took it out but forecastdata is undefined
-var uvi = parseInt(forecastData.current.uvi);
-function checkUvIndex() {
-
-    // if the uv index returns 
-
-    if (uvi < 4) {
-        return "good"
-    }
-    if (uvi < 7) {
-        return "moderate"
-    }
-    if (uvi < 10) {
-        return "horrid"
-    }
-
-    for(var i = 0; i < uvIndexEl.length; i++){
-        uvIndexEl[i].className = uvIndexEl[i].className + " " + checkUvIndex(uvIndexEl[i])
-
-    }
-    
 }
 
 

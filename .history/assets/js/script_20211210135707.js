@@ -68,12 +68,11 @@ var displayCurrentCity = function (data) {
     var temperatureEl = document.querySelector(".temperature")
     var windSpeedEl = document.querySelector(".wind-speed")
     var humidityEl = document.querySelector(".humidity")
-
-    temperatureEl.textContent = "Temperature: " + `${data.main.temp}` + "°C"
-    windSpeedEl.textContent = "Wind Speed: " + `${data.wind.speed}` + "m/s"
-    humidityEl.textContent = "Humidity: " + `${data.main.humidity}` + "%"
+    temperatureEl.textContent = "Temperature:" + `${data.main.temp}` + "°C"
+    windSpeedEl.textContent = "Wind Speed:" + `${data.wind.speed}` + "m/s"
+    humidityEl.textContent = "Humidity:" + `${data.main.humidity}` + "%"
     //do I need to append childs here
-    //whys this not showing up
+    //whys this not sh owing up
 
 }
 //first add more html elements for current city
@@ -84,7 +83,7 @@ var displayCurrentCity = function (data) {
 var fiveDayForecastEl = document.querySelector(".forecast")
 
 var getForecast = function (coord) {
-    var forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&exclude={part}&appid=82b88905657c227b366aeed2a3762dff&units=metric`
+    var forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&exclude={part}&appid=82b88905657c227b366aeed2a3762dff`
 
     fetch(forecastUrl).then(function (forecastResponse) {
         return forecastResponse.json()
@@ -97,10 +96,7 @@ var getForecast = function (coord) {
 }
 
 var displayForecast = function (forecastData) {
-    //here are the UVI
-    var uvIndexEl = document.querySelector(".uv-index")
-    uvIndexEl.textContent = "UV Index: " + `${forecastData.current.uvi}`
-    
+
     console.log(forecastData)
     //the for loop is so it runs through all days and hopefully puts them on the page
     for (var i = 1; i < forecastData.daily.length - 2; i++) {
@@ -116,9 +112,9 @@ var displayForecast = function (forecastData) {
         var humidityEl = document.createElement('p')
 
         //TODO add some text to make it look nice
-        temperatureEl.textContent = "Temperature: " + `${dailyData.temp.day}` + "°C"
-        windSpeedEl.textContent = "Wind Speed: " + `${dailyData.wind_speed}` + "m/s"
-        humidityEl.textContent = "Humidity: " + `${dailyData.humidity}`
+        temperatureEl.textContent = `${dailyData.temp.day}`
+        windSpeedEl.textContent = `${dailyData.wind_speed}`
+        humidityEl.textContent = `${dailyData.humidity}`
         header.innerHTML = `<img src=http://openweathermap.org/img/wn/${dailyData.weather[0].icon}@2x.png> ${displayDate}`;
         fiveDayForecastEl.appendChild(listItem);
 
@@ -128,29 +124,6 @@ var displayForecast = function (forecastData) {
 
     }
 
-}
-//LOOK HERE
-//I took it out but forecastdata is undefined
-var uvi = parseInt(forecastData.current.uvi);
-function checkUvIndex() {
-
-    // if the uv index returns 
-
-    if (uvi < 4) {
-        return "good"
-    }
-    if (uvi < 7) {
-        return "moderate"
-    }
-    if (uvi < 10) {
-        return "horrid"
-    }
-
-    for(var i = 0; i < uvIndexEl.length; i++){
-        uvIndexEl[i].className = uvIndexEl[i].className + " " + checkUvIndex(uvIndexEl[i])
-
-    }
-    
 }
 
 

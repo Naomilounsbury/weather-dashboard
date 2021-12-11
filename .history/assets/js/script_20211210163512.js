@@ -97,7 +97,6 @@ var getForecast = function (coord) {
 }
 
 var displayForecast = function (forecastData) {
-    //here are the UVI
     var uvIndexEl = document.querySelector(".uv-index")
     uvIndexEl.textContent = "UV Index: " + `${forecastData.current.uvi}`
     
