@@ -4,19 +4,24 @@
 
 //hopefully the way this works is when a city is entered it fetches that data
 var nameInputEl = document.querySelector(".city-name");
+var cityBtns = document.querySelector(".city-buttons")
 var getWeather = function (event) {
+    //when somebody uses the input to search event.target.value will be undefined 
+    //when someone clicks a btn then hopefully the btn replaces the input
+    var cityName = event.target.value||nameInputEl.value.trim()
+    
 
 
     //so the whole url needs to be dynamic so I have to put backticks on the whole thing
     //then the dollar sign and curly braces signal javascript that there will be code in here and the code will evaluate to a string that 
     // will be input in this position 
-    var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${nameInputEl.value.trim()}&appid=82b88905657c227b366aeed2a3762dff&units=metric`
+    var requestURL = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=82b88905657c227b366aeed2a3762dff&units=metric`
     event.preventDefault()
     //need a variable that lets the getweather function have access to the data
     //and return that data
     //type of is a weird one
-    console.log(nameInputEl.value)
-
+    console.log(event.target.value)
+    
     fetch(requestURL)
         // after the request finishes, so when the promise resovles the then part is a function that runs once the promise resolves
         .then(function (response) {
@@ -55,24 +60,40 @@ var citiesSearch = document.querySelector("#cities")
 //creating a function that saves the data in local storage
 
 var saveCity = function (city) {
-
-
+    var storage = window.localStorage
+    var citiesArray = Object.keys(storage)
+    //if cities array doesn't include the city we set it in local storage 
+    if(!citiesArray.includes(city)){
+        localStorage.setItem(`${city}`, city) 
+    }
+    
     //spreading it in, putting all the items from thois other array inside this other array
     //we have an object and variable both called searched cities, I'm so confused on which is which can the computer even tell
-    localStorage.setItem(`${city}`, city)
     
 }
 var displayBtn = function(){
+    //getting rid of some goddamn duplicates
+    cityBtns.innerHTML = "";
     var storage = window.localStorage
     var citiesArray = Object.keys(storage)
     console.log(citiesArray)
     //TODO make a for loop where I create a btn element for each city and add it to the page
     //also check that the cities arent duplicated
 
-    
-
-
+    for(var i = 0; i< citiesArray.length; i++){
+        var createBtn = document.createElement("button")
+        createBtn.innerText = citiesArray[i]
+        createBtn.value = citiesArray[i]
+        createBtn.className = "w-100 m-100"
+        createBtn.onclick = getWeather
+        cityBtns.append(createBtn)
+        
+        
+    }
+ 
 }
+
+//display current city is just going through the data for the city basically anything I can get with that first api call
 var displayCurrentCity = function (data) {
     console.log(data)
     //city date icon temperature wind speed humidity
@@ -93,13 +114,10 @@ var displayCurrentCity = function (data) {
     saveCity(data.name)
 
 }
-//first add more html elements for current city
-//insert data into elements via javascrpt 
-//create a new display forecast function to display the five day forecast
-//display forecast function should go right before I call save data
 
 var fiveDayForecastEl = document.querySelector(".forecast")
-
+// this function is literally just to pull data from the second api
+//i used other functions to do stuff with the data; displayForecast and checkUvIndex
 var getForecast = function (coord) {
     var forecastUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&exclude={part}&appid=82b88905657c227b366aeed2a3762dff&units=metric`
 
@@ -108,21 +126,23 @@ var getForecast = function (coord) {
     }).then(function (forecastData) {
         displayForecast(forecastData)
         checkUvIndex(forecastData)
-        //TODO call my display forcast function here
+    
         //so by calling saveData inside the .then on the .then we are getting data
     
     })
 }
-
+//displayForecast takes data from the second api and displays it on the page 
 var displayForecast = function (forecastData) {
-    //here are the UVI
+    fiveDayForecastEl.innerHTML = "";
 
     console.log(forecastData)
     //the for loop is so it runs through all days and hopefully puts them on the page
     for (var i = 1; i < forecastData.daily.length - 2; i++) {
-        // Create a list element
+        // so this is my for loop to get the five day forecast on the page 
+        // the problem is that it keeps going with every onclick
 
         var dailyData = forecastData.daily[i]
+        //unless I want to end up in the 1970s I have to use unix
         var displayDate = moment.unix(dailyData.dt).format('MMMM Do YYYY');
         
         var header = document.createElement('h3');
@@ -131,38 +151,48 @@ var displayForecast = function (forecastData) {
         var windSpeedEl = document.createElement('p')
         var humidityEl = document.createElement('p')
 
-        //TODO add some text to make it look nice
+        // so i wanted to make the list item unstyled here to get rid of that stupid bullet point but its not working
+        listItem.className = "unstyled"
+        // just putting things on the page
         temperatureEl.textContent = "Temperature: " + `${dailyData.temp.day}` + "°C"
         windSpeedEl.textContent = "Wind Speed: " + `${dailyData.wind_speed}` + "m/s"
         humidityEl.textContent = "Humidity: " + `${dailyData.humidity}`
         header.innerHTML = `<img src=http://openweathermap.org/img/wn/${dailyData.weather[0].icon}@2x.png> ${displayDate}`;
+    
+    //appending to the page, this seems a bit confusing because first I'm appending to fiveday a list item and then a header to the
+    //list item and then the other things to the list item. why couldnt I just append everything to fiveday
+    //yet it works
         fiveDayForecastEl.appendChild(listItem);
-
-        // listItem.textContent = `${forecastData.daily[i]}`;
         listItem.appendChild(header);
         listItem.append(temperatureEl, windSpeedEl, humidityEl);
 
     }
-
+//TODO: stop the five day forecast from staying on the page when a new city is clicked 
 }
 
-
+// I needed a whole function to check the UV index
+//had to pass in forecast data because that was the api data that gave me uvi
 function checkUvIndex(forecastData) {
     var uvIndexEl = document.querySelector(".uv-index")
     uvIndexEl.textContent = "UV Index: " + `${forecastData.current.uvi}`
     var uvi = forecastData.current.uvi;
-    // if the uv index returns 
+    // if the uv index returns less than 4 then it needs to be green
+    // if between 4 and 7 it should be yellow
+    //if it returns above 7 like mexico city itll be red
     let classEl;
     if (uvi < 4) {
-        classEl = "badge bg-success"
+        classEl = "uv-index badge bg-success"
     }
     if (uvi > 4 && uvi < 7) {
-        classEl = "badge bg-warning text-dark"
+        classEl = "uv-index badge bg-warning text-dark"
     }
     if (uvi > 7) {
-        classEl = "badge bg-danger"
+        classEl = "uv-index badge bg-danger"
     }
-        uvIndexEl.className = uvIndexEl.className + " " + classEl
+    //this is the important piece of code really, the if statement is just saying what color to change to
+    //but this piece right here is adding the new classname  
+        uvIndexEl.className = classEl
+        //TODO: figure out how to get the class name to go back down because once I get red it doesnt go back to green
   
 }
 
