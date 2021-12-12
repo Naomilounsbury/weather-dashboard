@@ -55,23 +55,15 @@ var citiesSearch = document.querySelector("#cities")
 //creating a function that saves the data in local storage
 
 var saveCity = function (city) {
-
-
+    //in javascript if the left side of your or is falsy and the right side is truthy it returns truthy/sets the variable to the 
+    //truthy value/ in other words javascript wants it to work
+    //creating an empty object with an array called searchedCities
+    var searchedCities = JSON.parse(localStorage.getItem("cities"))||{cityArray:[]}
+    console.log(city)
+    console.log(searchedCities)
     //spreading it in, putting all the items from thois other array inside this other array
     //we have an object and variable both called searched cities, I'm so confused on which is which can the computer even tell
-    localStorage.setItem(`${city}`, city)
-    
-}
-var displayBtn = function(){
-    var storage = window.localStorage
-    var citiesArray = Object.keys(storage)
-    console.log(citiesArray)
-    //TODO make a for loop where I create a btn element for each city and add it to the page
-    //also check that the cities arent duplicated
-
-    
-
-
+    localStorage.setItem("cities",{cityArray:[...searchedCities.cityArray, city]})
 }
 var displayCurrentCity = function (data) {
     console.log(data)
@@ -89,8 +81,6 @@ var displayCurrentCity = function (data) {
     humidityEl.textContent = "Humidity: " + `${data.main.humidity}` + "%"
     //do I need to append childs here
     //whys this not showing up
-    displayBtn()
-    saveCity(data.name)
 
 }
 //first add more html elements for current city
@@ -110,7 +100,7 @@ var getForecast = function (coord) {
         checkUvIndex(forecastData)
         //TODO call my display forcast function here
         //so by calling saveData inside the .then on the .then we are getting data
-    
+        saveCity(nameInputEl.value.trim())
     })
 }
 
@@ -124,7 +114,7 @@ var displayForecast = function (forecastData) {
 
         var dailyData = forecastData.daily[i]
         var displayDate = moment.unix(dailyData.dt).format('MMMM Do YYYY');
-        
+
         var header = document.createElement('h3');
         var listItem = document.createElement('li');
         var temperatureEl = document.createElement('p')

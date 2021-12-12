@@ -64,14 +64,8 @@ var saveCity = function (city) {
 }
 var displayBtn = function(){
     var storage = window.localStorage
-    var citiesArray = Object.keys(storage)
-    console.log(citiesArray)
-    //TODO make a for loop where I create a btn element for each city and add it to the page
-    //also check that the cities arent duplicated
-
-    
-
-
+    console.log(Object.storage.keys())
+    Object.storage.keys()
 }
 var displayCurrentCity = function (data) {
     console.log(data)
@@ -90,7 +84,6 @@ var displayCurrentCity = function (data) {
     //do I need to append childs here
     //whys this not showing up
     displayBtn()
-    saveCity(data.name)
 
 }
 //first add more html elements for current city
@@ -110,7 +103,7 @@ var getForecast = function (coord) {
         checkUvIndex(forecastData)
         //TODO call my display forcast function here
         //so by calling saveData inside the .then on the .then we are getting data
-    
+        saveCity(nameInputEl.value.trim())
     })
 }
 
@@ -124,7 +117,7 @@ var displayForecast = function (forecastData) {
 
         var dailyData = forecastData.daily[i]
         var displayDate = moment.unix(dailyData.dt).format('MMMM Do YYYY');
-        
+
         var header = document.createElement('h3');
         var listItem = document.createElement('li');
         var temperatureEl = document.createElement('p')

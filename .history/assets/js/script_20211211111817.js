@@ -68,7 +68,6 @@ var displayBtn = function(){
     console.log(citiesArray)
     //TODO make a for loop where I create a btn element for each city and add it to the page
     //also check that the cities arent duplicated
-
     
 
 
@@ -124,7 +123,7 @@ var displayForecast = function (forecastData) {
 
         var dailyData = forecastData.daily[i]
         var displayDate = moment.unix(dailyData.dt).format('MMMM Do YYYY');
-        
+
         var header = document.createElement('h3');
         var listItem = document.createElement('li');
         var temperatureEl = document.createElement('p')

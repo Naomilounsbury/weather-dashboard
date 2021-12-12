@@ -53,25 +53,10 @@ var weatherContainerEl = document.querySelector(".cities-container");
 var citiesSearch = document.querySelector("#cities")
 
 //creating a function that saves the data in local storage
-
-var saveCity = function (city) {
-
-
-    //spreading it in, putting all the items from thois other array inside this other array
-    //we have an object and variable both called searched cities, I'm so confused on which is which can the computer even tell
-    localStorage.setItem(`${city}`, city)
-    
-}
-var displayBtn = function(){
-    var storage = window.localStorage
-    var citiesArray = Object.keys(storage)
-    console.log(citiesArray)
-    //TODO make a for loop where I create a btn element for each city and add it to the page
-    //also check that the cities arent duplicated
-
-    
-
-
+var saveData = function (city, data) {
+    console.log(city)
+    console.log(data)
+    localStorage.setItem(city, data)
 }
 var displayCurrentCity = function (data) {
     console.log(data)
@@ -89,8 +74,6 @@ var displayCurrentCity = function (data) {
     humidityEl.textContent = "Humidity: " + `${data.main.humidity}` + "%"
     //do I need to append childs here
     //whys this not showing up
-    displayBtn()
-    saveCity(data.name)
 
 }
 //first add more html elements for current city
@@ -107,16 +90,17 @@ var getForecast = function (coord) {
         return forecastResponse.json()
     }).then(function (forecastData) {
         displayForecast(forecastData)
-        checkUvIndex(forecastData)
         //TODO call my display forcast function here
         //so by calling saveData inside the .then on the .then we are getting data
-    
+        saveData(nameInputEl.value.trim(), forecastData)
     })
 }
 
 var displayForecast = function (forecastData) {
     //here are the UVI
-
+    var uvIndexEl = document.querySelector(".uv-index")
+    uvIndexEl.textContent = "UV Index: " + `${forecastData.current.uvi}`
+    
     console.log(forecastData)
     //the for loop is so it runs through all days and hopefully puts them on the page
     for (var i = 1; i < forecastData.daily.length - 2; i++) {
@@ -124,7 +108,7 @@ var displayForecast = function (forecastData) {
 
         var dailyData = forecastData.daily[i]
         var displayDate = moment.unix(dailyData.dt).format('MMMM Do YYYY');
-        
+
         var header = document.createElement('h3');
         var listItem = document.createElement('li');
         var temperatureEl = document.createElement('p')
@@ -145,25 +129,28 @@ var displayForecast = function (forecastData) {
     }
 
 }
+//LOOK HERE
+//I took it out but forecastdata is undefined
 
-
-function checkUvIndex(forecastData) {
-    var uvIndexEl = document.querySelector(".uv-index")
-    uvIndexEl.textContent = "UV Index: " + `${forecastData.current.uvi}`
-    var uvi = forecastData.current.uvi;
+var checkUvIndex = function(forecastData) {
+var uvi = parseInt(forecastData.current.uvi);
     // if the uv index returns 
-    let classEl;
+
     if (uvi < 4) {
-        classEl = "badge bg-success"
+        return "good"
     }
-    if (uvi > 4 && uvi < 7) {
-        classEl = "badge bg-warning text-dark"
+    if (uvi < 7) {
+        return "moderate"
     }
-    if (uvi > 7) {
-        classEl = "badge bg-danger"
+    if (uvi < 10) {
+        return "horrid"
     }
-        uvIndexEl.className = uvIndexEl.className + " " + classEl
-  
+
+    for(var i = 0; i < uvIndexEl.length; i++){
+        uvIndexEl[i].className = uvIndexEl[i].className + " " + checkUvIndex(uvIndexEl[i])
+
+    }
+    
 }
 
 

@@ -53,25 +53,10 @@ var weatherContainerEl = document.querySelector(".cities-container");
 var citiesSearch = document.querySelector("#cities")
 
 //creating a function that saves the data in local storage
-
-var saveCity = function (city) {
-
-
-    //spreading it in, putting all the items from thois other array inside this other array
-    //we have an object and variable both called searched cities, I'm so confused on which is which can the computer even tell
-    localStorage.setItem(`${city}`, city)
-    
-}
-var displayBtn = function(){
-    var storage = window.localStorage
-    var citiesArray = Object.keys(storage)
-    console.log(citiesArray)
-    //TODO make a for loop where I create a btn element for each city and add it to the page
-    //also check that the cities arent duplicated
-
-    
-
-
+var saveData = function (city, data) {
+    console.log(city)
+    console.log(data)
+    localStorage.setItem(city, data)
 }
 var displayCurrentCity = function (data) {
     console.log(data)
@@ -89,8 +74,6 @@ var displayCurrentCity = function (data) {
     humidityEl.textContent = "Humidity: " + `${data.main.humidity}` + "%"
     //do I need to append childs here
     //whys this not showing up
-    displayBtn()
-    saveCity(data.name)
 
 }
 //first add more html elements for current city
@@ -110,7 +93,7 @@ var getForecast = function (coord) {
         checkUvIndex(forecastData)
         //TODO call my display forcast function here
         //so by calling saveData inside the .then on the .then we are getting data
-    
+        saveData(nameInputEl.value.trim(), forecastData)
     })
 }
 
@@ -124,7 +107,7 @@ var displayForecast = function (forecastData) {
 
         var dailyData = forecastData.daily[i]
         var displayDate = moment.unix(dailyData.dt).format('MMMM Do YYYY');
-        
+
         var header = document.createElement('h3');
         var listItem = document.createElement('li');
         var temperatureEl = document.createElement('p')
@@ -145,25 +128,30 @@ var displayForecast = function (forecastData) {
     }
 
 }
+//LOOK HERE
+//I took it out but forecastdata is undefined
 
-
-function checkUvIndex(forecastData) {
+var checkUvIndex = function (forecastData) {
     var uvIndexEl = document.querySelector(".uv-index")
+    console.log(uvIndexEl)
     uvIndexEl.textContent = "UV Index: " + `${forecastData.current.uvi}`
     var uvi = forecastData.current.uvi;
     // if the uv index returns 
     let classEl;
     if (uvi < 4) {
-        classEl = "badge bg-success"
+        classEl = "good"
     }
     if (uvi > 4 && uvi < 7) {
-        classEl = "badge bg-warning text-dark"
+        classEl = "moderate"
     }
-    if (uvi > 7) {
-        classEl = "badge bg-danger"
+    if (uvi < 10) {
+        classEl = "horrid"
     }
-        uvIndexEl.className = uvIndexEl.className + " " + classEl
-  
+    //  
+    for (var i = 0; i < uvIndexEl.length; i++) {
+        uvIndexEl[i].className = uvIndexEl[i].className + " " + classEl
+        console.log(uvIndexEl)
+    }
 }
 
 
