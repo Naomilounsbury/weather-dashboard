@@ -6,10 +6,11 @@
 var nameInputEl = document.querySelector(".city-name");
 var cityBtns = document.querySelector(".city-buttons")
 var getWeather = function (event) {
+    //so I want to clear my input after each click so I will try putting this here
+    nameInputEl.innerHTML = "";
     //when somebody uses the input to search event.target.value will be undefined 
     //when someone clicks a btn then hopefully the btn replaces the input
-    var cityName = event.target.value||nameInputEl.value.trim()
-    
+    var cityName = event.target.value || nameInputEl.value.trim()
 
 
     //so the whole url needs to be dynamic so I have to put backticks on the whole thing
@@ -21,7 +22,7 @@ var getWeather = function (event) {
     //and return that data
     //type of is a weird one
     console.log(event.target.value)
-    
+
     fetch(requestURL)
         // after the request finishes, so when the promise resovles the then part is a function that runs once the promise resolves
         .then(function (response) {
@@ -63,34 +64,27 @@ var saveCity = function (city) {
     var storage = window.localStorage
     var citiesArray = Object.keys(storage)
     //if cities array doesn't include the city we set it in local storage 
-    if(!citiesArray.includes(city)){
-        localStorage.setItem(`${city}`, city) 
+    if (!citiesArray.includes(city)) {
+        localStorage.setItem(`${city}`, city)
     }
-    
-    //spreading it in, putting all the items from thois other array inside this other array
-    //we have an object and variable both called searched cities, I'm so confused on which is which can the computer even tell
-    
+
 }
-var displayBtn = function(){
-    //getting rid of some goddamn duplicates
+//made a button
+var displayBtn = function () {
+    //getting rid of some duplicates
     cityBtns.innerHTML = "";
     var storage = window.localStorage
     var citiesArray = Object.keys(storage)
     console.log(citiesArray)
-    //TODO make a for loop where I create a btn element for each city and add it to the page
-    //also check that the cities arent duplicated
 
-    for(var i = 0; i< citiesArray.length; i++){
+    for (var i = 0; i < citiesArray.length; i++) {
         var createBtn = document.createElement("button")
         createBtn.innerText = citiesArray[i]
         createBtn.value = citiesArray[i]
-        createBtn.className = "w-100 m-100"
+        createBtn.className = "btn btn-outline-primary text-nowrap"
         createBtn.onclick = getWeather
         cityBtns.append(createBtn)
-        
-        
     }
- 
 }
 
 //display current city is just going through the data for the city basically anything I can get with that first api call
@@ -126,9 +120,9 @@ var getForecast = function (coord) {
     }).then(function (forecastData) {
         displayForecast(forecastData)
         checkUvIndex(forecastData)
-    
+
         //so by calling saveData inside the .then on the .then we are getting data
-    
+
     })
 }
 //displayForecast takes data from the second api and displays it on the page 
@@ -144,7 +138,7 @@ var displayForecast = function (forecastData) {
         var dailyData = forecastData.daily[i]
         //unless I want to end up in the 1970s I have to use unix
         var displayDate = moment.unix(dailyData.dt).format('MMMM Do YYYY');
-        
+
         var header = document.createElement('h3');
         var listItem = document.createElement('li');
         var temperatureEl = document.createElement('p')
@@ -152,22 +146,22 @@ var displayForecast = function (forecastData) {
         var humidityEl = document.createElement('p')
 
         // so i wanted to make the list item unstyled here to get rid of that stupid bullet point but its not working
-        listItem.className = "unstyled"
+        listItem.className = "list-group-item list-group-item-primary"
         // just putting things on the page
         temperatureEl.textContent = "Temperature: " + `${dailyData.temp.day}` + "°C"
         windSpeedEl.textContent = "Wind Speed: " + `${dailyData.wind_speed}` + "m/s"
         humidityEl.textContent = "Humidity: " + `${dailyData.humidity}`
         header.innerHTML = `<img src=http://openweathermap.org/img/wn/${dailyData.weather[0].icon}@2x.png> ${displayDate}`;
-    
-    //appending to the page, this seems a bit confusing because first I'm appending to fiveday a list item and then a header to the
-    //list item and then the other things to the list item. why couldnt I just append everything to fiveday
-    //yet it works
+
+        //appending to the page, this seems a bit confusing because first I'm appending to fiveday a list item and then a header to the
+        //list item and then the other things to the list item. why couldnt I just append everything to fiveday
+        //yet it works
         fiveDayForecastEl.appendChild(listItem);
         listItem.appendChild(header);
         listItem.append(temperatureEl, windSpeedEl, humidityEl);
 
     }
-//TODO: stop the five day forecast from staying on the page when a new city is clicked 
+    //TODO: stop the five day forecast from staying on the page when a new city is clicked 
 }
 
 // I needed a whole function to check the UV index
@@ -191,14 +185,6 @@ function checkUvIndex(forecastData) {
     }
     //this is the important piece of code really, the if statement is just saying what color to change to
     //but this piece right here is adding the new classname  
-        uvIndexEl.className = classEl
-        //TODO: figure out how to get the class name to go back down because once I get red it doesnt go back to green
-  
+    uvIndexEl.className = classEl
+    //TODO: figure out how to get the class name to go back down because once I get red it doesnt go back to green
 }
-
-
-
-
-
-
-
