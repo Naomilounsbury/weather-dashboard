@@ -38,6 +38,7 @@ var getWeather = function (event) {
         }).then(function (dataData) {
             displayCurrentCity(dataData)
             getForecast(dataData.coord)
+            displayBtn()
         })
 
 
